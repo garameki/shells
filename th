@@ -1,0 +1,48 @@
+#!/bin/bash
+
+		#HEADより先にある全タグ削除 delete all tags in front of HEAD
+
+		echo "All tag and its hash"
+		TAGS=()
+		COMMITS=()
+		LIST_TAG=$(git tag)
+		for ele in ${LIST_TAG[@]}; do
+echo $ele
+			LIST=$(git show $ele | grep -E "^commit")
+			for ele2 in ${LIST[@]}; do
+				if [[ $LIST =~ ^commit(.+)$ ]]; then
+					COMMITS+=(${BASH_REMATCH[1]})
+					echo ${BASH_REMATCH[1]}
+					TAGS+=($ele)
+					break
+				fi
+			done
+
+		done
+
+		DELETES=()
+		ALL_COMMITS=$(git log --pretty=format:%H)
+		for ele in ${ALL_COMMITS[@]}; do
+			ii=0
+			for ele2 in ${COMMITS[@]}; do
+				if [ "${ele}" == "${ele2}" ]; then
+					DELETES+=($ii)
+				fi
+				let ii++
+			done
+		done
+
+		for ii in ${DELETES[@]}; do
+
+			unset TAGS[$ii]
+
+		done
+
+		echo ""
+		echo "tags to be removed"
+		for tag in ${TAGS[@]}; do
+			echo $tag
+			#git tag -d $tag
+			#git push origin :refs/tags/$tag
+		done
+		echo "checkoutしたコミットよりも先のタグをリモートとローカルから削除するにはコメントアウトを外してください"

@@ -1,0 +1,4 @@
+nohup python3 ~/git/websocket-client-image-8801.py > t > tt < /dev/null &
+nohup python3 ~/git/websocket-client-max31856-9801.py > t > tt < /dev/null &
+nohup python3 ~/src/sys_kama/sys_kama.py > t > tt < /dev/null &
+nohup python3 ~/src/gpio/servo1.py > t > tt < /dev/null &

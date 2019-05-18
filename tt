@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/pi/src/sys_kama/sys_kama.py", line 34, in <module>
+    ht0 = Ht16k33(DEVICE_BUS,DEVICE_ADDR0)
+  File "/home/pi/src/sys_kama/ht16k33.py", line 34, in __init__
+    self.bus.write_byte(self.addr,0x21)
+OSError: [Errno 121] Remote I/O error
