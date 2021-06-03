@@ -17,7 +17,7 @@ NOTICE_FLAG="${CYAN}"
 
 BRANCHING_MSG="${NOTICE_FLAG} creating new version release branch to the ${WHITE}origin${CYAN}..."
 
-if [ -f VERSION ]; then
+if [ -f VERSION ]; then #-fオプション ファイル名ならTRUE
 	echo "It has already begun."
 else
 	git branch -vv
@@ -25,7 +25,7 @@ else
 	echo -e "${WARNING_FLAG}You must be in master branch"
 	echo -e "${WARNING_FLAG}And you must make origin your ref you want to push by 'git remote add origin ~'"
 	read any
-    echo -ne "${QUESTION_FLAG} ${CYAN}Do you want to create a version file, develop branch and release blanch and then start from scratch? [${WHITE}y${CYAN}]: "
+    echo -ne "${QUESTION_FLAG} ${CYAN}Do you want to create a version file \"VERSION\", develop branch and release blanch and then start from scratch? [${WHITE}y${CYAN}]: "
     read RESPONSE
     if [ "$RESPONSE" = "" ]; then RESPONSE="y"; fi
     if [ "$RESPONSE" = "Y" ]; then RESPONSE="y"; fi
@@ -37,11 +37,32 @@ else
 
 
 	SUGGESTED_VERSION="0.1"
-	echo -ne "${QUESTION_FLAG} ${CYAN}Enter a version number [${WHITE}$SUGGESTED_VERSION${CYAN}]:" #""の中の${}は{}の中身を解釈した結果に置換される
-	read INPUT_STRING
-	if [ "$INPUT_STRING" = "" ]; then
-		INPUT_STRING=$SUGGESTED_VERSION
-	fi
+
+	#構文解析も含めた希望versionの入力
+
+	while [ 1 ]; do
+		echo -ne "${QUESTION_FLAG} ${CYAN}Enter a version number [${WHITE}$SUGGESTED_VERSION${CYAN}]:" #""の中の${}は{}の中身を解釈した結果に置換される
+		read INPUT_STRING
+		if [ "$INPUT_STRING" = "" ]; then
+			INPUT_STRING=$SUGGESTED_VERSION
+			break
+
+		elif [[ "$INPUT_STRING" =~ ^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$ ]]; then
+			echo -e "${YELLOW}${INPUT_STRING}${WHITE}"
+			break
+		else
+			echo -e "${PURPLE}Please Retry${WHITE}"
+
+			if [[ "$INPUT_STRING" =~ ^0[0-9]+ ]]; then
+				echo -e "${PURPLE}Do not start major part from \"0\" of \"0x.xx\"${WHITE}"
+			fi
+			if [[ "$INPUT_STRING" =~ [.]0[0-9]+ ]]; then
+				echo -e "${PURPLE}Do not start minor part from \"0\" of \"x.0xx\"${WHITE}"
+			fi
+			
+			echo "Correct examples \"13.0\",\"0.100\""
+		fi
+	done
 
 
 
@@ -65,12 +86,12 @@ else
 		echo "git push origin release-$INPUT_STRING"
 	git push origin release-$INPUT_STRING
 
-        echo "$INPUT_STRING.0" > VERSION
-        echo "## $INPUT_STRING.0 ($NOW)" > CHANGELOG.md
+        	echo "$INPUT_STRING.0" > VERSION
+        	echo "## $INPUT_STRING.0 ($NOW)" > CHANGELOG.md
         git log --pretty=format:"  - %s" >> CHANGELOG.md > /dev/null
-        echo "" >> CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        echo -e "$PUSHING_MSG"
+        	echo "" >> CHANGELOG.md
+        	echo "" >> CHANGELOG.md
+        	echo -e "$PUSHING_MSG"
 		echo ""
 	        echo "git add VERSION CHANGELOG.md"
         git add VERSION CHANGELOG.md
