@@ -27,6 +27,7 @@ if [ $bb ]; then
 	sudo rsync -av --delete /home/pi/www $USBBACK/pi
 	sudo rsync -av --delete /home/pi/src $USBBACK/pi
 	sudo rsync -av --delete /home/pi/stream  $USBBACK/pi
+
 	sudo mkdir -p $USBBACK/etc
 	sudo rsync -av /etc/ntp.conf $USBBACK/etc
 	sudo rsync -av --delete /etc/apache2 $USBBACK/etc
@@ -35,17 +36,21 @@ if [ $bb ]; then
 	sudo rsync -av /etc/hosts $USBBACK/etc
 	sudo rsync -av --delete /etc/ssl $USBBACK/etc
 	sudo rsync -av --delete /etc/letsencrypt $USBBACK/etc
+
 	sudo mkdir -p $USBBACK/var
 	sudo mkdir -p $USBBACK/var/www
 	sudo mkdir -p $USBBACK/var/www/html
 	sudo rsync -av --delete /var/www/html/ $USBBACK/var/www/html
+
 	sudo mkdir -p $USBBACK/var
 	sudo mkdir -p $USBBACK/var/log
 	sudo mkdir -p $USBBACK/var/log/apache2
 	sudo rsync -av --delete /var/log/apache2/ $USBBACK/var/log/apache2
+
 	sudo mkdir -p $USBBACK/var/spool
 	sudo mkdir -p $USBBACK/var/spool/cron
 	sudo rsync -av --delete /var/spool/cron/ $USBBACK/var/spool/cron
+
 	sudo mkdir -p $USBBACK/boot
 	sudo rsync -av /boot/config.txt $USBBACK/boot
 else
